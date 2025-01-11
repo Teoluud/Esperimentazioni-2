@@ -93,6 +93,9 @@ Float_t nx2 = 0;
 Float_t x2[70];
 Int_t npoints2 = 0;
 
+Float_t p2 = p1;
+Float_t errp2 = errp1;
+
 if(!input2) {
       cerr << "Error: file could not be opened" << endl;
       exit(1);
@@ -133,4 +136,28 @@ biconvessa2->GetXaxis()->SetRangeUser(250,600);
 biconvessa2->GetYaxis()->SetRangeUser(0,40);
 biconvessa2->Fit("g2","L");
 biconvessa2->Draw();
+
+Double_t media2= biconvessa2->GetMean(); // prende il valore medio dell'HISTO
+Double_t errmedia2 = biconvessa2->GetRMS(); //prende l'RMS dell'HISTO
+//Double_t chisquare=funz->GetChisquare();
+cout << "\nmedia = " << media2 << " errmedia = " << errmedia2 << "\n\n" << endl; 
+mediafit= g2->GetParameter(1);
+sigmafit= g2->GetParameter(2);
+cout << "\nmediafit = " << mediafit <<" sigmafit "<< sigmafit<<  endl; 
+Float_t q2 = mediafit;
+Float_t errq2 = sigmafit;
+//provate a mettere qui il calcolo del fuoco
+Float_t f2 = (p2*q2)/(p2+q2);
+Float_t errf2 = 1/(p2+q2)/(p2+q2)*sqrt(q2*q2*errp2*errp2+p2*p2*errq2*errq2);
+
+cout << "q = " <<q2<< " +/- " << errq2<<endl;
+
+cout << "\nil fuoco è: " << f2 <<" +/- " << errf2 << " mm" << endl;
+
+//-------------------------------Test di Gauss--------------------------------//
+cout << "\nTEST DI GAUSS" << endl;
+Float_t z = abs(f1-f2)/sqrt(errf1*errf1+errf2*errf2);
+cout << "z = " << z << endl;
+if(z<=1.96) cout << "Valori compatibili" << endl;
+else cout << "Valori non compatibili" << endl;
 }
