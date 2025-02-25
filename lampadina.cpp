@@ -24,6 +24,8 @@ per eseguire il programma adottare uno dei due seguenti metodi alternativi:
 #include <TCanvas.h>          // ci serve per disegnare i grafici
 #include <TF1.h>              // ci serve per scrivere le funzioni con cui fittare i grafici
 #include <iomanip>            // ci serve per manipolare l'output a video
+#include <fstream>
+#include <TStyle.h>
 
 using namespace std;
 
