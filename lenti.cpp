@@ -5,6 +5,7 @@
 #include <TF1.h>          // ci serve per scrivere le funzioni con cui fittare i grafici
 #include <iomanip>        // ci serve per manipolare l'output a video
 #include <TH1.h>
+#include <TMath.h>
 
 using namespace std;
 
@@ -66,7 +67,7 @@ void lenti()
   // GENERO ISTOGRAMMA
 
   // TH1F("nome histo","titolo histo", numero classi, valore minimo, valore massimo)
-  TH1F *biconvessa1 = new TH1F("biconvessa1", "lente biconvessa", nbin1, 384.6 - largh1 / 2, 384.6 + largh1 / 2);
+  TH1F *biconvessa1 = new TH1F("biconvessa1", "Lente Biconvessa", nbin1, 384.6 - largh1 / 2, 384.6 + largh1 / 2);
   TF1 *g1 = new TF1("g1", "gaus", 300, 500); // definisco la funzione di fit g1 come gaussiana:[0]=normalizzazione - [1]=media - [2]=sigma
   for (Int_t i = 0; i < npoints1; i++)
     biconvessa1->Fill(x1[i], 1);                   // riempie l'istogramma incrementando di 1 ciascun bin
@@ -87,14 +88,20 @@ void lenti()
   Float_t sigmafit = g1->GetParameter(2);
   cout << "\nmediafit = " << mediafit << " sigmafit " << sigmafit << endl;
   Float_t q1 = mediafit;
-  Float_t errq1 = sigmafit;
+  Float_t errq1 = sigmafit / sqrt(npoints1);
   // provate a mettere qui il calcolo del fuoco
   Float_t f1 = (p1 * q1) / (p1 + q1);
-  Float_t errf1 = 1 / (p1 + q1) / (p1 + q1) * sqrt(q1 * q1 * errp1 * errp1 + p1 * p1 * errq1 * errq1);
+  Float_t errf1 = 1 / (p1 + q1) / (p1 + q1) * sqrt(pow(q1, 4) * errp1 * errp1 + pow(p1, 4) * errq1 * errq1);
 
   cout << "q = " << q1 << " +/- " << errq1 << endl;
 
   cout << "\nil fuoco è: " << f1 << " +/- " << errf1 << " mm" << endl;
+
+  // INGRANDIMENTO
+  Float_t G1 = q1 / p1;
+  Float_t errG1 = sqrt(errq1 * errq1 / p1 / p1 + errp1 * errp1 * q1 * q1 / pow(p1, 4));
+
+  cout << "\nl'ingrandimento è: " << G1 << " +/- " << errG1 << endl;
 
   //-----------------------------------------------------------------------------//
 
@@ -151,7 +158,7 @@ void lenti()
     biconvessa2->Fill(x2[i], 1);
   biconvessa2->GetXaxis()->SetTitle("x(mm)");
   biconvessa2->GetYaxis()->SetTitle("N");
-  biconvessa2->GetXaxis()->SetRangeUser(250, 600);
+  biconvessa2->GetXaxis()->SetRangeUser(300, 500);
   biconvessa2->GetYaxis()->SetRangeUser(0, 40);
   biconvessa2->Fit("g2", "L");
   biconvessa2->Draw();
@@ -165,10 +172,10 @@ void lenti()
   sigmafit = g2->GetParameter(2);
   cout << "\nmediafit = " << mediafit << " sigmafit " << sigmafit << endl;
   Float_t q2 = mediafit;
-  Float_t errq2 = sigmafit;
+  Float_t errq2 = sigmafit / sqrt(npoints2);
   // provate a mettere qui il calcolo del fuoco
   Float_t f2 = (p2 * q2) / (p2 + q2);
-  Float_t errf2 = 1 / (p2 + q2) / (p2 + q2) * sqrt(q2 * q2 * errp2 * errp2 + p2 * p2 * errq2 * errq2);
+  Float_t errf2 = 1 / (p2 + q2) / (p2 + q2) * sqrt(pow(q2, 4) * errp2 * errp2 + pow(p2, 4) * errq2 * errq2);
 
   cout << "q = " << q2 << " +/- " << errq2 << endl;
 
@@ -182,4 +189,126 @@ void lenti()
     cout << "Valori compatibili" << endl;
   else
     cout << "Valori non compatibili" << endl;
+
+  //--------------------------------LENTE PIANO CONVESSA-------------------------------------//
+
+  cout << "\n\n--- LENTE PIANO CONVESSA ---" << endl;
+
+  FILE *input3 = fopen("dati_lente_pianoconvessa.txt", "r");
+
+  Float_t nx3 = 0;
+  Float_t x3[70];
+  Int_t npoints3 = 0;
+
+  Float_t p3 = 130;
+  Float_t errp3 = errp1;
+
+  if (!input3)
+  {
+    cerr << "Error: file could not be opened" << endl;
+    exit(1);
+  }
+  // inizio lettura file di input
+  while (!feof(input3))
+  {
+    fscanf(input3, "%f\n", &nx3); // scan del file di input, riga per riga
+    x3[npoints3] = nx3;           // riempimento del vettore
+    npoints3++;                   // incremento della variabile numero punto
+  }
+
+  fclose(input3); // chiusura del file di input
+  cout << "\nil numero totale di dati è: " << npoints3 << endl;
+
+  TCanvas *histo3 = new TCanvas("histo3", "histo3", 800, 600);
+  histo3->Clear();
+
+  Float_t amp3 = 1.5;
+  Float_t dispmax3 = TMath::MaxElement(npoints3, x3) - TMath::MinElement(npoints3, x3);
+  Float_t classi3 = dispmax3 / amp3;
+  Int_t nbin3;
+
+  for (Int_t i = 0; i < npoints3; i++)
+  {
+    if (i < classi3)
+      nbin3 = i + 1;
+  }
+
+  Float_t largh3 = nbin3 * amp3;
+  cout << "\nla dispersione dell'istogramma è " << dispmax3 << ", arrotondando per eccesso, in modo da avere un numero intero di classi: " << largh3 << endl;
+  cout << "\nil numero di classi con ampiezza " << amp3 << " è " << nbin3 << "\n"
+       << endl;
+  
+  histo3->cd();
+
+  TH1F *pianoconvessa = new TH1F("pianoconvessa", "Lente Piano Convessa", nbin3, 204.07 - largh3 / 2 , 204.07 + largh3 / 2);
+  TF1 *g3 = new TF1("g3", "gaus", 100, 300);
+
+  for (Int_t i = 0; i < npoints3; i++)
+    pianoconvessa->Fill(x3[i], 1);
+  pianoconvessa->GetXaxis()->SetTitle("x(mm)");
+  pianoconvessa->GetYaxis()->SetTitle("N");
+  pianoconvessa->GetXaxis()->SetRangeUser(0, 400);
+  pianoconvessa->GetYaxis()->SetRangeUser(0, 40);
+  pianoconvessa->Fit("g3", "L");
+  pianoconvessa->Draw();
+
+  Double_t media3 = pianoconvessa->GetMean();   // prende il valore medio dell'HISTO
+  Double_t errmedia3 = pianoconvessa->GetRMS(); // prende l'RMS dell'HISTO
+  // Double_t chisquare=funz->GetChisquare();
+  cout << "\nmedia = " << media3 << " errmedia = " << errmedia3 << "\n\n"
+       << endl;
+  mediafit = g3->GetParameter(1);
+  sigmafit = g3->GetParameter(2);
+  cout << "\nmediafit = " << mediafit << " sigmafit " << sigmafit << endl;
+  Float_t q3 = mediafit;
+  Float_t errq3 = sigmafit / sqrt(npoints2);
+  // provate a mettere qui il calcolo del fuoco
+  Float_t f3 = (p3 * q3) / (p3 + q3);
+  Float_t errf3 = 1 / (p3 + q3) / (p3 + q3) * sqrt(pow(q3, 4) * errp3 * errp3 + pow(p3, 4) * errq3 * errq3);
+
+  cout << "q = " << q3 << " +/- " << errq3 << endl;
+
+  //-------------------------------LENTE DIVERGENTE------------------------------//
+  cout << "\n\n--- LENTE DIVERGENTE ---" << endl;
+
+  FILE *input4 = fopen("dati_lente_divergente.txt", "r");
+  Float_t nx4 = 0;
+  Float_t x4[70];
+  Int_t npoints4 = 0;
+
+  if (!input4)
+  {
+    cerr << "Error: file could not be opened" << endl;
+    exit(1);
+  }
+
+  while (!feof(input4))
+  {
+    fscanf(input4, "%f\n", &nx4);
+    x3[npoints4] = nx4;
+    npoints4++;
+  }
+
+  fclose(input4);
+  cout << "\nIl numero totale di dati è: " << npoints4 << endl;
+
+  // Creazione tela
+  TCanvas *histo4 = new TCanvas("histo4", "histo4", 800, 600);
+  histo4->Clear();
+
+  Float_t amp4 = 3;
+  Float_t dispmax4 = 404 - 381;
+  Float_t classi4 = dispmax4 / amp4;
+  Int_t nbin4;
+
+  for (Int_t i = 0; i < npoints4; i++)
+  {
+    if (i < classi4)
+      nbin4 = i + 1;
+  }
+
+  Float_t largh4 = nbin4 * amp4;
+  cout << "\nla dispersione dell'istogramma è " << dispmax4 << ", arrotondando per eccesso, in modo da avere un numero intero di classi: " << largh4 << endl;
+  cout << "\nil numero di classi con ampiezza " << amp4 << " è " << nbin4 << "\n"
+       << endl;
 }
