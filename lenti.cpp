@@ -261,7 +261,7 @@ void lenti()
   sigmafit = g3->GetParameter(2);
   cout << "\nmediafit = " << mediafit << " sigmafit " << sigmafit << endl;
   Float_t q3 = mediafit;
-  Float_t errq3 = sigmafit / sqrt(npoints2);
+  Float_t errq3 = sigmafit / sqrt(npoints3);
   // provate a mettere qui il calcolo del fuoco
   Float_t f3 = (p3 * q3) / (p3 + q3);
   Float_t errf3 = 1 / (p3 + q3) / (p3 + q3) * sqrt(pow(q3, 4) * errp3 * errp3 + pow(p3, 4) * errq3 * errq3);
@@ -285,7 +285,7 @@ void lenti()
   while (!feof(input4))
   {
     fscanf(input4, "%f\n", &nx4);
-    x3[npoints4] = nx4;
+    x4[npoints4] = nx4;
     npoints4++;
   }
 
@@ -296,8 +296,8 @@ void lenti()
   TCanvas *histo4 = new TCanvas("histo4", "histo4", 800, 600);
   histo4->Clear();
 
-  Float_t amp4 = 3;
-  Float_t dispmax4 = 404 - 381;
+  Float_t amp4 = 2;
+  Float_t dispmax4 = TMath::MaxElement(npoints4, x4) - TMath::MinElement(npoints4, x4);
   Float_t classi4 = dispmax4 / amp4;
   Int_t nbin4;
 
@@ -311,4 +311,26 @@ void lenti()
   cout << "\nla dispersione dell'istogramma è " << dispmax4 << ", arrotondando per eccesso, in modo da avere un numero intero di classi: " << largh4 << endl;
   cout << "\nil numero di classi con ampiezza " << amp4 << " è " << nbin4 << "\n"
        << endl;
+  
+  TH1F *divergente = new TH1F("divergente", "Lente Divergente", nbin4, 274 - largh4 / 2, 274 + largh4 / 2);
+  TF1 *g4 = new TF1("g4", "gaus", 200, 600);
+
+  for(Int_t i = 0; i < npoints4; i++)
+    divergente->Fill(x4[i], 1);
+  divergente->GetXaxis()->SetTitle("x(mm)");
+  divergente->GetYaxis()->SetTitle("N");
+  divergente->GetXaxis()->SetRangeUser(200, 600);
+  divergente->GetYaxis()->SetRangeUser(0, 40);
+  divergente->Fit("g4", "L");
+  divergente->Draw();
+
+  mediafit = g4->GetParameter(1);
+  sigmafit = g4->GetParameter(2);
+
+  cout << "\nmediafit = " << mediafit << " sigmafit " << sigmafit << endl;
+  Float_t q4 = mediafit;
+  Float_t errq4 = sigmafit / sqrt(npoints4);
+
+  cout << "q = " << q4 << " +/- " << errq4 << endl;
+
 }
