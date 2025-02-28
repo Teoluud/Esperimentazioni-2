@@ -222,7 +222,7 @@ void lenti()
   TCanvas *histo3 = new TCanvas("histo3", "histo3", 800, 600);
   histo3->Clear();
 
-  Float_t amp3 = 1.5;
+  Float_t amp3 = 1;
   Float_t dispmax3 = TMath::MaxElement(npoints3, x3) - TMath::MinElement(npoints3, x3);
   Float_t classi3 = dispmax3 / amp3;
   Int_t nbin3;
@@ -237,11 +237,14 @@ void lenti()
   cout << "\nla dispersione dell'istogramma è " << dispmax3 << ", arrotondando per eccesso, in modo da avere un numero intero di classi: " << largh3 << endl;
   cout << "\nil numero di classi con ampiezza " << amp3 << " è " << nbin3 << "\n"
        << endl;
-  
+
   histo3->cd();
 
-  TH1F *pianoconvessa = new TH1F("pianoconvessa", "Lente piano-convessa", nbin3, 204.07 - largh3 / 2 , 204.07 + largh3 / 2 + amp3);
-  TF1 *g3 = new TF1("g3", "gaus", 100, 300);
+  double par[6];
+
+  TH1F *pianoconvessa = new TH1F("pianoconvessa", "Lente piano-convessa", nbin3, 204.07 - largh3 / 2, 204.07 + largh3 / 2 + amp3);
+  TF1 *g3_1 = new TF1("g3_1", "gaus", 190, 203);
+  TF1 *g3_2 = new TF1("g3_2", "gaus", 203, 220);
 
   for (Int_t i = 0; i < npoints3; i++)
     pianoconvessa->Fill(x3[i], 1);
@@ -249,7 +252,16 @@ void lenti()
   pianoconvessa->GetYaxis()->SetTitle("N");
   pianoconvessa->GetXaxis()->SetRangeUser(0, 400);
   pianoconvessa->GetYaxis()->SetRangeUser(0, 40);
-  pianoconvessa->Fit("g3", "L");
+  pianoconvessa->Fit("g3_1", "LR");
+  pianoconvessa->Fit("g3_2", "LR");
+
+  g3_1->GetParameters(&par[0]);
+  g3_2->GetParameters(&par[3]);
+
+  TF1 *g3 = new TF1("g3", "gaus(0)+gaus(3)", 190, 220);
+  g3->SetParameters(par);
+  pianoconvessa->Fit("g3", "R");
+  g3->SetLineColor(2);
   pianoconvessa->Draw();
 
   Double_t media3 = pianoconvessa->GetMean();   // prende il valore medio dell'HISTO
@@ -257,16 +269,19 @@ void lenti()
   // Double_t chisquare=funz->GetChisquare();
   cout << "\nmedia = " << media3 << " errmedia = " << errmedia3 << "\n\n"
        << endl;
-  mediafit = g3->GetParameter(1);
-  sigmafit = g3->GetParameter(2);
-  cout << "\nmediafit = " << mediafit << " sigmafit " << sigmafit << endl;
-  Float_t q3 = mediafit;
-  Float_t errq3 = sigmafit / sqrt(npoints3);
+  Double_t mu_1 = par[1];
+  Double_t mu_2 = par[4];
+  Double_t sigma_1 = par[2];
+  Double_t sigma_2 = par[5];
+
+  Float_t q3 = (mu_1 / sigma_1 / sigma_1 + mu_2 / sigma_2 / sigma_2) / (1 / sigma_1 / sigma_1 + 1 / sigma_2 / sigma_2);
+  Float_t errq3 = sqrt(1 / (1 / sigma_1 / sigma_1 + 1 / sigma_2 / sigma_2));
   // provate a mettere qui il calcolo del fuoco
   Float_t f3 = (p3 * q3) / (p3 + q3);
   Float_t errf3 = 1 / (p3 + q3) / (p3 + q3) * sqrt(pow(q3, 4) * errp3 * errp3 + pow(p3, 4) * errq3 * errq3);
 
   cout << "q = " << q3 << " +/- " << errq3 << endl;
+  cout << g3->GetParameter(1) << g3->GetParameter(2) << endl;
 
   //-------------------------------LENTE DIVERGENTE------------------------------//
   cout << "\n\n--- LENTE DIVERGENTE ---" << endl;
@@ -311,11 +326,11 @@ void lenti()
   cout << "\nla dispersione dell'istogramma è " << dispmax4 << ", arrotondando per eccesso, in modo da avere un numero intero di classi: " << largh4 << endl;
   cout << "\nil numero di classi con ampiezza " << amp4 << " è " << nbin4 << "\n"
        << endl;
-  
+
   TH1F *divergente = new TH1F("divergente", "Lente divergente", nbin4, 274 - largh4 / 2, 274 + largh4 / 2 + 2);
   TF1 *g4 = new TF1("g4", "gaus", 200, 600);
 
-  for(Int_t i = 0; i < npoints4; i++)
+  for (Int_t i = 0; i < npoints4; i++)
     divergente->Fill(x4[i], 1);
   divergente->GetXaxis()->SetTitle("x(mm)");
   divergente->GetYaxis()->SetTitle("N");
@@ -342,13 +357,13 @@ void lenti()
   Float_t x5[10];
   Int_t npoints5 = 0;
 
-  if(!input5)
+  if (!input5)
   {
     cerr << "Error: file could not be opened" << endl;
     exit(1);
   }
 
-  while(!feof(input5))
+  while (!feof(input5))
   {
     fscanf(input5, "%f\n", &nx5);
     x5[npoints5] = nx5;
@@ -362,13 +377,13 @@ void lenti()
   histo5->Clear();
 
   Float_t amp5 = 2;
-  Float_t dispmax5 = TMath::MaxElement(10, x5) - TMath::MinElement(10,x5);
+  Float_t dispmax5 = TMath::MaxElement(10, x5) - TMath::MinElement(10, x5);
   Float_t classi5 = dispmax5 / amp5;
   Int_t nbin5 = 0;
 
-  for(Int_t i = 0; i < npoints5; i++)
+  for (Int_t i = 0; i < npoints5; i++)
   {
-    if(i < classi5)
+    if (i < classi5)
       nbin5 = i + 1;
   }
 
@@ -380,7 +395,7 @@ void lenti()
   TH1F *sistema = new TH1F("sistema", "Sistema di lenti", nbin5, 318 - largh5 / 2, 318 + largh5 / 2);
   TF1 *g5 = new TF1("g5", "gaus", 250, 450);
 
-  for(Int_t i = 0; i < npoints5; i++)
+  for (Int_t i = 0; i < npoints5; i++)
     sistema->Fill(x5[i], 1);
   sistema->GetXaxis()->SetTitle("x(mm)");
   sistema->GetYaxis()->SetTitle("N");
