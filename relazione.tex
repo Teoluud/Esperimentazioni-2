@@ -13,6 +13,7 @@
 \usepackage{changepage}
 \usepackage[toc,page]{appendix}
 \usepackage{breqn}
+\usepackage{ntheorem}
 
 \sisetup{per-mode=symbol}
 
@@ -65,9 +66,28 @@
 \section{Analisi dati}
     \subsection{Lente biconvessa}
     Poiché abbiamo compiuto $N=70$ misure ripetute della stessa grandezza, ci aspettiamo che i dati si distribuiscano secondo un andamento gaussiano. Abbiamo dunque eseguito un fit dell'istogramma delle frequenze assolute dei dati.
-    \begin{figure}
-    	
+    \begin{figure}[H]
+    	\centering
+    	\includegraphics[width=0.75\linewidth]{histo1.jpg}
+    	\caption{Lente biconvessa}
+    	\label{fig:biconvessa}
     \end{figure}
+    Di seguito riportiamo il test del $\chi^2$, con un livello di significatività del $5\%$:
+    \[
+    H_0: \text{la distribuzione gaussiana ben descrive quella dei dati sperimentali.}
+    \]
+    \begin{table}[H]
+    	\centering
+    	\begin{tabular}{|c|c|}
+    		\hline
+    		$\chi^2$ & 1.942 \\
+    		$\nu$ & 9 \\
+    		$\chi^2_c$ & 16.919\\
+    		$\chi^2_s$ & 3.325\\ \hline
+    	\end{tabular}
+    	\label{tab:chi-quadro-biconvessa}
+    \end{table}
+    $\chi^2\leq\chi^2_s<\chi^2_c$, questo significa che 
     \subsection{Lente biconcava}
     \subsection{Sistema di lenti}
 \section{Risultati e osservazioni conclusive}
