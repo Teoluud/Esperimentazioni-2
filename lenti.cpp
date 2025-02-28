@@ -67,7 +67,7 @@ void lenti()
   // GENERO ISTOGRAMMA
 
   // TH1F("nome histo","titolo histo", numero classi, valore minimo, valore massimo)
-  TH1F *biconvessa1 = new TH1F("biconvessa1", "Lente Biconvessa", nbin1, 384.6 - largh1 / 2, 384.6 + largh1 / 2);
+  TH1F *biconvessa1 = new TH1F("biconvessa1", "Lente biconvessa", nbin1, 384.6 - largh1 / 2, 384.6 + largh1 / 2);
   TF1 *g1 = new TF1("g1", "gaus", 300, 500); // definisco la funzione di fit g1 come gaussiana:[0]=normalizzazione - [1]=media - [2]=sigma
   for (Int_t i = 0; i < npoints1; i++)
     biconvessa1->Fill(x1[i], 1);                   // riempie l'istogramma incrementando di 1 ciascun bin
@@ -151,7 +151,7 @@ void lenti()
   cout << "\nil numero di classi con ampiezza " << amp2 << " è " << nbin2 << "\n"
        << endl;
 
-  TH1F *biconvessa2 = new TH1F("biconvessa2", "Lente Biconvessa Ruotata", nbin2, 392.59 - largh2 / 2, 392.59 + largh2 / 2);
+  TH1F *biconvessa2 = new TH1F("biconvessa2", "Lente biconvessa ruotata", nbin2, 392.59 - largh2 / 2, 392.59 + largh2 / 2);
   TF1 *g2 = new TF1("g2", "gaus", 300, 500);
 
   for (Int_t i = 0; i < npoints2; i++)
@@ -192,7 +192,7 @@ void lenti()
 
   //--------------------------------LENTE PIANO CONVESSA-------------------------------------//
 
-  cout << "\n\n--- LENTE PIANO CONVESSA ---" << endl;
+  cout << "\n\n--- LENTE PIANO-CONVESSA ---" << endl;
 
   FILE *input3 = fopen("dati_lente_pianoconvessa.txt", "r");
 
@@ -240,7 +240,7 @@ void lenti()
   
   histo3->cd();
 
-  TH1F *pianoconvessa = new TH1F("pianoconvessa", "Lente Piano Convessa", nbin3, 204.07 - largh3 / 2 , 204.07 + largh3 / 2);
+  TH1F *pianoconvessa = new TH1F("pianoconvessa", "Lente piano-convessa", nbin3, 204.07 - largh3 / 2 , 204.07 + largh3 / 2 + amp3);
   TF1 *g3 = new TF1("g3", "gaus", 100, 300);
 
   for (Int_t i = 0; i < npoints3; i++)
@@ -312,7 +312,7 @@ void lenti()
   cout << "\nil numero di classi con ampiezza " << amp4 << " è " << nbin4 << "\n"
        << endl;
   
-  TH1F *divergente = new TH1F("divergente", "Lente Divergente", nbin4, 274 - largh4 / 2, 274 + largh4 / 2);
+  TH1F *divergente = new TH1F("divergente", "Lente divergente", nbin4, 274 - largh4 / 2, 274 + largh4 / 2 + 2);
   TF1 *g4 = new TF1("g4", "gaus", 200, 600);
 
   for(Int_t i = 0; i < npoints4; i++)
@@ -377,7 +377,7 @@ void lenti()
   cout << "\nil numero di classi con ampiezza " << amp5 << " è " << nbin5 << "\n"
        << endl;
 
-  TH1F *sistema = new TH1F("sistema", "Sistema di Lenti", nbin5, 318 - largh5 / 2, 318 + largh5 / 2);
+  TH1F *sistema = new TH1F("sistema", "Sistema di lenti", nbin5, 318 - largh5 / 2, 318 + largh5 / 2);
   TF1 *g5 = new TF1("g5", "gaus", 250, 450);
 
   for(Int_t i = 0; i < npoints5; i++)
