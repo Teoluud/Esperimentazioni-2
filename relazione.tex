@@ -13,7 +13,6 @@
 \usepackage{changepage}
 \usepackage[toc,page]{appendix}
 \usepackage{breqn}
-\usepackage{ntheorem}
 
 \sisetup{per-mode=symbol}
 
@@ -45,9 +44,10 @@
         \item Schermo per visualizzare l'immagine
         \item Calibro (sensibilità: \SI{0.05}{\mm})
     \end{itemize}
+    Abbiamo scelto di utilizzare come incertezza della scala graduata del banco ottico il valore di \SI{2}{\mm}, al posto della sua sensibilità, perché meglio rappresentativo della nostra precisione nell'effettuare la misurazione. D'ora in poi, dunque, quando si farà riferimento alla sensibilità dello strumento, si intenderà quella da noi ad esso associata.
 \section{Presa dati}
     \subsection{Lente biconvessa}\label{sec:biconvessa}
-        Abbiamo fissato la lente biconvessa su un supporto posto a distanza $p=\SI{0.140(2)}{\m}$. Successivamente abbiamo compiuto 70 misure ripetute della posizione dell'immagine, spostando lo schermo finché questa non risultasse nitida, con l'accortezza di alternare destra e sinistra come direzioni di avvicinamento.
+        Abbiamo fissato la lente biconvessa su un supporto posto a distanza $p=\SI{140(2)}{\mm}$. Successivamente abbiamo compiuto 70 misure ripetute della posizione dell'immagine, spostando lo schermo finché questa non risultasse nitida, con l'accortezza di alternare destra e sinistra come direzioni di avvicinamento.
         %Dati.
 
         Ci aspettiamo che i due fuochi abbiano la stessa distanza dalla lente; l'abbiamo quindi ruotato di $\pi$ e ripetuto le misure utilizzando la stessa procedura e le medesime accortezze.
@@ -78,16 +78,34 @@
     \]
     \begin{table}[H]
     	\centering
-    	\begin{tabular}{|c|c|}
+    	\begin{tabular}{|c|c|c|}
     		\hline
-    		$\chi^2$ & 1.942 \\
-    		$\nu$ & 9 \\
-    		$\chi^2_c$ & 16.919\\
-    		$\chi^2_s$ & 3.325\\ \hline
+    		 & (1) & (2) \\ \hline
+    		$\chi^2$ & 1.942 & 11.010 \\
+    		$\nu$ & 9 & 7 \\
+    		$\chi^2_c$ & 16.919 & 14.067 \\
+    		$\chi^2_s$ & 3.325 & 2.167 \\ \hline
     	\end{tabular}
     	\label{tab:chi-quadro-biconvessa}
-    \end{table}
-    $\chi^2\leq\chi^2_s<\chi^2_c$, questo significa che 
+    \end{table}Nel caso (1) il chi-quadro risulta essere \textit{sospetto} ($\chi^2\leq\chi^2_s$); accettiamo l'ipotesi nulla per i seguenti motivi:
+    \begin{itemize}
+    	\item % da fare
+    \end{itemize}Nel caso (2) il chi-quadro è \textit{accettabile} ($\chi^2\leq\chi^2_c$), dunque accettiamo l'ipotesi $H_0$.
+    
+    Siccome il fit gaussiano ben descrive la distribuzione dei dati, possiamo considerare $\bar{q} = \mu$:
+    \[
+    q_1 = \SI{385(2)}{\mm}
+    \]
+    dove come incertezza associata abbiamo tenuto la sensibilità dello strumento, in quanto la deviazione standard della media era inferiore.
+    
+    Successivamente abbiamo calcolato il valore del fuoco:
+    \[
+    f_1=\frac{p_1\cdot q_1}{p_1+q_1} = \SI{103(1)}{\mm}
+    \]
+    L'ingrandimento vale invece:
+    \[
+    G_1=\frac{q_1}{p_1}=\SI{2.75(4)}{}
+    \]
     \subsection{Lente biconcava}
     \subsection{Sistema di lenti}
 \section{Risultati e osservazioni conclusive}
