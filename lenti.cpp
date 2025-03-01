@@ -74,7 +74,7 @@ void lenti()
   biconvessa1->GetXaxis()->SetTitle("x(mm)");      // titolo dell'asse X
   biconvessa1->GetYaxis()->SetTitle("N");          // titolo dell'asse Y
   biconvessa1->GetXaxis()->SetRangeUser(250, 600); // range lungo asse X
-  biconvessa1->GetYaxis()->SetRangeUser(0, 40);    // range lungo asse Y
+  biconvessa1->GetYaxis()->SetRangeUser(0, 25);    // range lungo asse Y
   biconvessa1->Fit("g1", "L");
   biconvessa1->Draw(); // disegna l'istogramma
 
@@ -159,7 +159,7 @@ void lenti()
   biconvessa2->GetXaxis()->SetTitle("x(mm)");
   biconvessa2->GetYaxis()->SetTitle("N");
   biconvessa2->GetXaxis()->SetRangeUser(300, 500);
-  biconvessa2->GetYaxis()->SetRangeUser(0, 40);
+  biconvessa2->GetYaxis()->SetRangeUser(0, 25);
   biconvessa2->Fit("g2", "L");
   biconvessa2->Draw();
 
@@ -240,28 +240,28 @@ void lenti()
 
   histo3->cd();
 
-  double par[6];
+  //double par[6];
 
   TH1F *pianoconvessa = new TH1F("pianoconvessa", "Lente piano-convessa", nbin3, 204.07 - largh3 / 2, 204.07 + largh3 / 2 + amp3);
-  TF1 *g3_1 = new TF1("g3_1", "gaus", 190, 203);
-  TF1 *g3_2 = new TF1("g3_2", "gaus", 203, 220);
+  //TF1 *g3_1 = new TF1("g3_1", "gaus", 198, 205);
+  //TF1 *g3_2 = new TF1("g3_2", "gaus", 205, 220);
 
   for (Int_t i = 0; i < npoints3; i++)
     pianoconvessa->Fill(x3[i], 1);
   pianoconvessa->GetXaxis()->SetTitle("x(mm)");
   pianoconvessa->GetYaxis()->SetTitle("N");
   pianoconvessa->GetXaxis()->SetRangeUser(0, 400);
-  pianoconvessa->GetYaxis()->SetRangeUser(0, 40);
-  pianoconvessa->Fit("g3_1", "LR");
-  pianoconvessa->Fit("g3_2", "LR");
+  pianoconvessa->GetYaxis()->SetRangeUser(0, 25);
+  //pianoconvessa->Fit("g3_1", "LR");
+  //pianoconvessa->Fit("g3_2", "LR");
 
-  g3_1->GetParameters(&par[0]);
-  g3_2->GetParameters(&par[3]);
+  //g3_1->GetParameters(&par[0]);
+  //g3_2->GetParameters(&par[3]);
 
-  TF1 *g3 = new TF1("g3", "gaus(0)+gaus(3)", 190, 220);
-  g3->SetParameters(par);
-  pianoconvessa->Fit("g3", "R");
-  g3->SetLineColor(2);
+  //TF1 *g3 = new TF1("g3", "gaus(0)+gaus(3)", 190, 220);
+  TF1 *g3 = new TF1("g3", "gaus", 190, 220);
+  //g3->SetParameters(par);
+  pianoconvessa->Fit("g3", "LR");
   pianoconvessa->Draw();
 
   Double_t media3 = pianoconvessa->GetMean();   // prende il valore medio dell'HISTO
@@ -269,19 +269,22 @@ void lenti()
   // Double_t chisquare=funz->GetChisquare();
   cout << "\nmedia = " << media3 << " errmedia = " << errmedia3 << "\n\n"
        << endl;
-  Double_t mu_1 = par[1];
-  Double_t mu_2 = par[4];
-  Double_t sigma_1 = par[2];
-  Double_t sigma_2 = par[5];
+  //Double_t mu_1 = par[1];
+  //Double_t mu_2 = par[4];
+  //Double_t sigma_1 = g3_1->GetParError(1);
+  //Double_t sigma_2 = g3_2->GetParError(1);
 
-  Float_t q3 = (mu_1 / sigma_1 / sigma_1 + mu_2 / sigma_2 / sigma_2) / (1 / sigma_1 / sigma_1 + 1 / sigma_2 / sigma_2);
-  Float_t errq3 = sqrt(1 / (1 / sigma_1 / sigma_1 + 1 / sigma_2 / sigma_2));
+  //Float_t q3 = (mu_1 / sigma_1 / sigma_1 + mu_2 / sigma_2 / sigma_2) / (1 / sigma_1 / sigma_1 + 1 / sigma_2 / sigma_2);
+  //Float_t errq3 = sqrt(1 / (1 / sigma_1 / sigma_1 + 1 / sigma_2 / sigma_2));
+  Float_t q3 = g3->GetParameter(1);
+  Float_t errq3 = g3->GetParameter(2) / sqrt(npoints3);
   // provate a mettere qui il calcolo del fuoco
   Float_t f3 = (p3 * q3) / (p3 + q3);
   Float_t errf3 = 1 / (p3 + q3) / (p3 + q3) * sqrt(pow(q3, 4) * errp3 * errp3 + pow(p3, 4) * errq3 * errq3);
-
+  //cout << "mu1 = " << mu_1 << " +/- " << sigma_1 << endl;
+  //cout << "mu2 = " << mu_2 << " +/- " << sigma_2 << endl;
   cout << "q = " << q3 << " +/- " << errq3 << endl;
-  cout << g3->GetParameter(1) << g3->GetParameter(2) << endl;
+  // cout << g3->GetParameter(1) << g3->GetParameter(2) << endl;
 
   //-------------------------------LENTE DIVERGENTE------------------------------//
   cout << "\n\n--- LENTE DIVERGENTE ---" << endl;
@@ -335,7 +338,7 @@ void lenti()
   divergente->GetXaxis()->SetTitle("x(mm)");
   divergente->GetYaxis()->SetTitle("N");
   divergente->GetXaxis()->SetRangeUser(200, 600);
-  divergente->GetYaxis()->SetRangeUser(0, 40);
+  divergente->GetYaxis()->SetRangeUser(0, 30);
   divergente->Fit("g4", "L");
   divergente->Draw();
 
