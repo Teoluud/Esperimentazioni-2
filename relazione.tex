@@ -14,6 +14,8 @@
 \usepackage[toc,page]{appendix}
 \usepackage{breqn}
 
+\renewcommand\thesubfigure{\arabic{subfigure}}
+
 \sisetup{per-mode=symbol}
 
 \title{\textbf{Lenti}}
@@ -66,11 +68,11 @@
 \section{Analisi dati}
     \subsection{Lente biconvessa}
     Poiché abbiamo compiuto $N=70$ misure ripetute della stessa grandezza, ci aspettiamo che i dati si distribuiscano secondo un andamento gaussiano. Abbiamo dunque eseguito un fit dell'istogramma delle frequenze assolute dei dati.
-    \begin{figure}[H]
+    \begin{figure}[H]%
     	\centering
-    	\includegraphics[width=0.75\linewidth]{histo1.jpg}
-    	\caption{Lente biconvessa}
-    	\label{fig:biconvessa}
+    	\subfloat[\centering Lente biconvessa]{\includegraphics[width=0.4\textwidth]{histo1.jpg}}%
+    	\qquad
+    	\subfloat[\centering Lente biconvessa ruotata]{\includegraphics[width=0.4\textwidth]{histo2.jpg}}%
     \end{figure}
     Di seguito riportiamo il test del $\chi^2$, con un livello di significatività del $5\%$:
     \[
@@ -87,25 +89,44 @@
     		$\chi^2_s$ & 3.325 & 2.167 \\ \hline
     	\end{tabular}
     	\label{tab:chi-quadro-biconvessa}
-    \end{table}Nel caso (1) il chi-quadro risulta essere \textit{sospetto} ($\chi^2\leq\chi^2_s$); accettiamo l'ipotesi nulla per i seguenti motivi:
+    \end{table}
+    Nel caso (1) il chi-quadro risulta essere \textit{sospetto} ($\chi^2\leq\chi^2_s$); accettiamo l'ipotesi nulla per i seguenti motivi:
     \begin{itemize}
     	\item % da fare
     \end{itemize}Nel caso (2) il chi-quadro è \textit{accettabile} ($\chi^2\leq\chi^2_c$), dunque accettiamo l'ipotesi $H_0$.
     
     Siccome il fit gaussiano ben descrive la distribuzione dei dati, possiamo considerare $\bar{q} = \mu$:
-    \[
-    q_1 = \SI{385(2)}{\mm}
-    \]
+    \begin{align*}
+    	q_1 = \SI{385(2)}{\mm} && q_2 = \SI{393(2)}{\mm}
+    \end{align*}
+    
     dove come incertezza associata abbiamo tenuto la sensibilità dello strumento, in quanto la deviazione standard della media era inferiore.
     
     Successivamente abbiamo calcolato il valore del fuoco:
-    \[
-    f_1=\frac{p_1\cdot q_1}{p_1+q_1} = \SI{103(1)}{\mm}
-    \]
+    \begin{align*}
+    	f_1=\frac{p_1\cdot q_1}{p_1+q_1}=\SI{103(1)}{\mm} && f_2=\frac{p_2\cdot q_2}{p_2+q_2}=\SI{103(1)}{\mm}
+    \end{align*}
+    Come ci aspettavamo, le due distanze focali sono compatibili.
+    
     L'ingrandimento vale invece:
+    \begin{align*}
+    	G_1=\frac{q_1}{p_1}=\SI{2.75(4)}{} && G_2=\frac{q_2}{p_2}=\SI{2.81(4)}{}
+    \end{align*}
+    Per verificare che il secondo ingrandimento sia compatibile con il rispettivo valore misurato, abbiamo effettuato un test di Gauss:
     \[
-    G_1=\frac{q_1}{p_1}=\SI{2.75(4)}{}
+    H_0: \text{abbiamo estratto $G_2-G_{2m}$ da una distribuzione normale centrata intorno a $\mu=0$ con $\sigma=\sqrt{\sigma_{G_2}^2+\sigma_{G_{2m}}^2}=0.07$}
     \]
+    \begin{table}[H]
+    	\centering
+    	\begin{tabular}{|c|c|}
+    		\hline
+    		z osservato ($z_o$) & 1.75 \\
+    		livello di significatività ($\alpha$) & 5\% \\
+    		z critico ($z_c$) & 1.96 \\ \hline
+    	\end{tabular}
+    	\label{tab:gauss-1}
+    \end{table}
+    Poiché $z_o\leq z_c$, accetto l'ipotesi nulla $H_0$ con un livello di significatività del 5\%.
     \subsection{Lente biconcava}
     \subsection{Sistema di lenti}
 \section{Risultati e osservazioni conclusive}
