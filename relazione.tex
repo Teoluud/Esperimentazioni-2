@@ -84,7 +84,7 @@
     		\hline
     		 & (1) & (2) \\ \hline
     		$\chi^2$ & 1.942 & 11.010 \\
-    		$\nu$ & 9 & 7 \\
+    		d.o.f & 9 & 7 \\
     		$\chi^2_c$ & 16.919 & 14.067 \\
     		$\chi^2_s$ & 3.325 & 2.167 \\ \hline
     	\end{tabular}
@@ -124,10 +124,68 @@
     		livello di significatività ($\alpha$) & 5\% \\
     		z critico ($z_c$) & 1.96 \\ \hline
     	\end{tabular}
-    	\label{tab:gauss-1}
+    	\label{tab:gauss-ingrandimento}
     \end{table}
     Poiché $z_o\leq z_c$, accetto l'ipotesi nulla $H_0$ con un livello di significatività del 5\%.
+    \subsection{Lente piano-convessa}
+    \textcolor{red}{Osservando la distribuzione dei dati, si può notare come questa presenti due picchi; questo è dovuto alla sistematica sottostima o sovrastima della posizione dell'immagine, compiuta da entrambi i lati. Abbiamo dunque eseguito il fit di una doppia gaussiana, composta dalla combinazione lineare di due distribuzioni normali, entrambe costruite su un intervallo pari alla metà delle classi.}
+    \begin{figure}[H]
+    	\centering
+    	\includegraphics[width=0.6\textwidth]{histo3.jpg}
+    	\caption{Lente piano-convessa}
+    	\label{fig:piano-convessa}
+    \end{figure}
+    Test del $\chi^2$ ($\alpha=5\%$):
+     \[
+    H_0: \text{la distribuzione gaussiana ben descrive i dati sperimentali.}
+    \]
+    \begin{table}[H]
+    	\centering
+    	\begin{tabular}{|c|c|}
+    		\hline
+    		$\chi^2$ & 23.424 \\
+    		d.o.f & 11 \\
+    		$\chi^2_c$ & 19.675 \\
+    		$\chi^2_s$ & 4.575 \\ \hline
+    	\end{tabular}
+    	\label{tab:chi-quadro-piano-convessa}
+    \end{table}
+    $\chi^2>\chi^2_c$, rifiutiamo dunque l'ipotesi nulla. Come si può osservare dall'istogramma delle frequenze assolute, questo è probabilmente dovuto ad un errore sistematico di sottostima della posizione dell'immagine.
+    
+    Scegliamo dunque come distanza lente-immagine il valor medio dei dati.
+    \[
+    q=\SI{}{\mm}
+    \]
     \subsection{Lente biconcava}
+    \begin{figure}[H]
+    	\centering
+    	\includegraphics[width=0.6\textwidth]{histo4.jpg}
+    	\caption{Lente biconcava}
+    	\label{fig:divergente}
+    \end{figure}
+    Test del $\chi^2$ ($\alpha=5\%$):
+    \[
+    H_0: \text{la doppia gaussiana ben descrive la distribuzione dei dati sperimentali.}
+    \]
+    \begin{table}[H]
+    	\centering
+    	\begin{tabular}{|c|c|}
+    		\hline
+    		$\chi^2$ & 2.325 \\
+    		d.o.f & 7 \\
+    		$\chi^2_c$ & 14.067 \\
+    		$\chi^2_s$ & 2.167 \\ \hline
+    	\end{tabular}
+    	\label{tab:chi-quadro-divergente}
+    \end{table}
+    $\chi^2_s<\chi^2\leq\chi^2_c$, accettiamo dunque l'ipotesi nulla.
+    \[
+    q = \SI{274(4)}{\mm}
+    \]
+    Il fuoco della lente divergente è:
+    \[
+    f_D=\frac{f\cdot f_1}{f_1-f}=\SI{-7.5(7)e2}{\mm}
+    \]
     \subsection{Sistema di lenti}
 \section{Risultati e osservazioni conclusive}
     \subsection{Lente biconvessa}
