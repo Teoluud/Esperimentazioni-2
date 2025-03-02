@@ -61,13 +61,13 @@
     Abbiamo ripetuto le precedenti misurazioni su una lente convergente piano-convessa mantenendo inalterato il numero di misure e la procedura utilizzata.
     
     \subsection{Lente biconcava}
-    Riutilizzando la lente biconvessa della Sezione \ref{sec:biconvessa}, costruiamo un sistema ottico formato da quest'ultima e da una lente negativa biconcava, montandole in modo che siano il più possibile vicine tra loro. Poniamo le due lenti a distanza $p$ dall'oggetto, ed esattamente nello stesso modo descritto precedentemente, misuriamo ripetutamente $q$.
+    Riutilizzando la lente biconvessa della Sezione \ref{sec:biconvessa}, abbiamo costruito un sistema ottico formato da quest'ultima e da una lente divergente biconcava, montandole in modo che fossero il più possibile vicine tra loro. Abbiamo posto le due lenti a distanza $p$ dall'oggetto e, come scritto sopra, abbiamo compiuto $N$ misurazioni di $q$.
     
     \subsection{Sistema di lenti}
-    Utilizzando due lenti convergenti disposte non a contatto, abbiamo misurato 10 volte il valore di $q_2$, ossia la distanza dalle lenti che rende nitida l'immagine sullo schermo.
+    Utilizzando due lenti convergenti non a contatto, abbiamo misurato 10 volte il valore di $q_2$, ovvero la posizione dell'immagine del sistema.
 \section{Analisi dati}
     \subsection{Lente biconvessa}
-    Poiché abbiamo compiuto $N=70$ misure ripetute della stessa grandezza, ci aspettiamo che i dati si distribuiscano secondo un andamento gaussiano. Abbiamo dunque eseguito un fit dell'istogramma delle frequenze assolute dei dati.
+    Poiché abbiamo compiuto $N=70$ misure ripetute della stessa grandezza, affetta da errori casuali, ci aspettiamo che i dati si distribuiscano secondo un andamento gaussiano. Abbiamo dunque eseguito un fit dell'istogramma delle frequenze assolute dei dati.
     \begin{figure}[H]%
     	\centering
     	\subfloat[\centering Lente biconvessa]{\includegraphics[width=0.4\textwidth]{histo1.jpg}}%
@@ -85,17 +85,13 @@
     		 & (1) & (2) \\ \hline
     		$\chi^2$ & 1.942 & 11.010 \\
     		d.o.f & 9 & 7 \\
-    		$\chi^2_c$ & 16.919 & 14.067 \\
-    		$\chi^2_s$ & 3.325 & 2.167 \\ \hline
+    		$\chi^2_c$ & 16.919 & 14.067 \\ \hline
     	\end{tabular}
     	\label{tab:chi-quadro-biconvessa}
     \end{table}
-    Nel caso (1) il chi-quadro risulta essere \textit{sospetto} ($\chi^2\leq\chi^2_s$); accettiamo l'ipotesi nulla per i seguenti motivi:
-    \begin{itemize}
-    	\item % da fare
-    \end{itemize}Nel caso (2) il chi-quadro è \textit{accettabile} ($\chi^2\leq\chi^2_c$), dunque accettiamo l'ipotesi $H_0$.
+    In entrambi i casi, $\chi^2\leq\chi^2_c$, dunque accettiamo l'ipotesi nulla.
     
-    Siccome il fit gaussiano ben descrive la distribuzione dei dati, possiamo considerare $\bar{q} = \mu$:
+    Siccome il fit gaussiano ben descrive la distribuzione dei dati, possiamo considerare $q=\mu$ con un livello di confidenza del 95\%:
     \begin{align*}
     	q_1 = \SI{385(2)}{\mm} && q_2 = \SI{393(2)}{\mm}
     \end{align*}
@@ -126,9 +122,9 @@
     	\end{tabular}
     	\label{tab:gauss-ingrandimento}
     \end{table}
-    Poiché $z_o\leq z_c$, accetto l'ipotesi nulla $H_0$ con un livello di significatività del 5\%.
+    Poiché $z_o\leq z_c$, accettiamo l'ipotesi nulla $H_0$ con un livello di significatività del 5\%.
     \subsection{Lente piano-convessa}
-    \textcolor{red}{Osservando la distribuzione dei dati, si può notare come questa presenti due picchi; questo è dovuto alla sistematica sottostima o sovrastima della posizione dell'immagine, compiuta da entrambi i lati. Abbiamo dunque eseguito il fit di una doppia gaussiana, composta dalla combinazione lineare di due distribuzioni normali, entrambe costruite su un intervallo pari alla metà delle classi.}
+    Abbiamo ripetuto il processo descritto nella sezione precedente per la lente piano-convessa.
     \begin{figure}[H]
     	\centering
     	\includegraphics[width=0.6\textwidth]{histo3.jpg}
@@ -145,8 +141,7 @@
     		\hline
     		$\chi^2$ & 23.424 \\
     		d.o.f & 11 \\
-    		$\chi^2_c$ & 19.675 \\
-    		$\chi^2_s$ & 4.575 \\ \hline
+    		$\chi^2_c$ & 19.675 \\ \hline
     	\end{tabular}
     	\label{tab:chi-quadro-piano-convessa}
     \end{table}
@@ -154,7 +149,11 @@
     
     Scegliamo dunque come distanza lente-immagine il valor medio dei dati.
     \[
-    q=\SI{}{\mm}
+    q=\SI{204(2)}{\mm}
+    \]
+    La distanza focale è dunque pari a:
+    \[
+    f_3=\SI{79.4(8)}{\mm}
     \]
     \subsection{Lente biconcava}
     \begin{figure}[H]
@@ -165,7 +164,7 @@
     \end{figure}
     Test del $\chi^2$ ($\alpha=5\%$):
     \[
-    H_0: \text{la doppia gaussiana ben descrive la distribuzione dei dati sperimentali.}
+    H_0: \text{la gaussiana ben descrive la distribuzione dei dati sperimentali.}
     \]
     \begin{table}[H]
     	\centering
@@ -173,12 +172,11 @@
     		\hline
     		$\chi^2$ & 2.325 \\
     		d.o.f & 7 \\
-    		$\chi^2_c$ & 14.067 \\
-    		$\chi^2_s$ & 2.167 \\ \hline
+    		$\chi^2_c$ & 14.067 \\ \hline
     	\end{tabular}
     	\label{tab:chi-quadro-divergente}
     \end{table}
-    $\chi^2_s<\chi^2\leq\chi^2_c$, accettiamo dunque l'ipotesi nulla.
+    $\chi^2\leq\chi^2_c$, accettiamo dunque l'ipotesi nulla.
     \[
     q = \SI{274(4)}{\mm}
     \]
@@ -187,10 +185,32 @@
     f_D=\frac{f\cdot f_1}{f_1-f}=\SI{-7.5(7)e2}{\mm}
     \]
     \subsection{Sistema di lenti}
+    Non abbiamo eseguito il fit di questa distribuzione di dati perché la grandezza del campione ($N=10$) era insufficiente. Il valore di $q$ è dunque dato dalla media aritmetica:
+    \[
+    q_m=\SI{318(2)}{\mm}
+    \]
+    Per verificare la compatibilità tra il valore misurato e quello calcolato a partire dalle proprietà geometriche note del sistema, abbiamo effettuato un test di Gauss:
+    \[
+    H_0: \text{abbiamo estratto $q_m-q_c$ da una distribuzione normale centrata intorno a $\mu=0$ con $\sigma=\sqrt{\sigma_{q_m}^2+\sigma_{q_c}^2}=\SI{2e1}{\mm}$}
+    \]
+    \begin{table}[H]
+    	\centering
+    	\begin{tabular}{|c|c|}
+    		\hline
+    		z osservato ($z_o$) & 0.326 \\
+    		livello di significatività ($\alpha$) & 5\% \\
+    		z critico ($z_c$) & 1.96 \\ \hline
+    	\end{tabular}
+    	\label{tab:gauss-sistema-lenti}
+    \end{table}
+    Poiché $z_o\leq z_c$, accettiamo l'ipotesi nulla $H_0$ con un livello di significatività del 5\%.
 \section{Risultati e osservazioni conclusive}
-    \subsection{Lente biconvessa}
-    \subsection{Lente biconcava}
-    \subsection{Sistema di lenti}
+Alla luce dei test statistici eseguiti, possiamo ritenerci soddisfatti del lavoro compiuto. Abbiamo infatti portato a termine con successo tutti gli obiettivi che ci eravamo proposti, ovvero:
+\begin{enumerate}
+	\item Tramite le approssimazioni di Gauss, misurare la distanza focale e l'ingrandimento delle lenti biconvessa e piano-convessa. Segnaliamo tuttavia la probabile presenza di un errore sistematico nell'acquisizione dei dati circa quest'ultima.
+	\item Misurare la distanza focale di una lente divergente (biconcava), tramite l'utilizzo di un sistema ottico composto da due lenti a contatto (biconvessa-biconcava).
+	\item Studiare un sistema ottico composto da due lenti non a contatto, utilizzando le proprietà ricavate nei punti precedenti.
+\end{enumerate}
 \begin{appendices}
     \section{Dati}
     \section{Calcoli}
