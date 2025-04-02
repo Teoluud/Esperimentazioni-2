@@ -350,3 +350,4 @@ void lenti()
   Float_t errq4 = sigmafit / sqrt(npoints4);
 
   cout << "q = " << q4 << " +/- " << errq4 << endl;
+}
