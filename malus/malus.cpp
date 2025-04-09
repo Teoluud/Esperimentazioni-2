@@ -15,10 +15,13 @@ using namespace std;
 void malus()
 {
     Int_t npoints = 37;
-    Float_t theta[npoints], ntheta = 0;
-    Float_t I[npoints], nI = 0;
-    Float_t stheta[npoints], nstheta = 1; // modificare
-    Float_t sI[npoints], nsI = 1; // modificare
+    Float_t theta[npoints];
+    Float_t ntheta = 0;
+    Float_t I[npoints];
+    Float_t nI = 0;
+    Float_t stheta[npoints];
+    Float_t nstheta = 0.03;
+    Float_t sI[npoints];
 
     fstream file;
     file.open("dati_malus.txt", ios::in);
@@ -28,15 +31,20 @@ void malus()
         file >> ntheta >> nI;
         theta[j] = ntheta;
         I[j] = nI;
-        stheta[j] = nstheta;
-        sI[j] = nsI;
     }
     file.close();
+
+    for(int j = 0; j < npoints; j++)
+    {
+        stheta[j] = nstheta;
+
+        sI[j] = 0.005*I[j] + 0.1;
+    }
 
     for (int j = 0; j < npoints; j++)
     {
         // Stampa a video dei valori. \t inserisce un tab nel print out. Mettendo \n si va a capo invece
-        cout << "Measurement number " << j << ":\t theta = (" << theta[j] << " +- " << stheta << ") rad, \t I = (" << I[j] << " +- " << sI << ") microA" << endl;
+        cout << "Measurement number " << j << ":\t theta = (" << theta[j] << " +- " << stheta[j] << ") rad, \t I = (" << I[j] << " +- " << sI[j] << ") microA" << endl;
         // ----------------------------------------------------------------- //
     }
 
@@ -50,7 +58,10 @@ void malus()
     gStyle->SetOptFit(1);
     g1->Draw("AP");
 
-    TF1 *fit = new TF1("fit", "[a]*pow(cos(x+[b]),2)", 0, 10); // eventualmente aggiungere parametro +[c]
+    TF1 *fit = new TF1("fit", "[a]*pow(TMath::Cos(x+[b]),2) + [c]", -0.5, 7.);
+    fit->SetParameter("a", 10.);
+    fit->SetParameter("b", 1.5);
+    //fit->SetParameter("c", 0.);
     g1->Fit(fit, "RM+");
 
 }
