@@ -53,7 +53,7 @@ void filtri()
     g1->SetMarkerStyle(21);
     g1->GetXaxis()->SetTitle("f (Hz)");
     c1->SetLogx(1);
-    g1->GetYaxis()->SetTitle("G = |V_o| / |V_i|");
+    g1->GetYaxis()->SetTitle("G = #frac{|V_{o}|}{|V_{i}|}");
     g1->SetTitle("G(f)");
     g1->Draw("AP");
 
@@ -108,30 +108,30 @@ void filtri()
     TGraphErrors *g3 = new TGraphErrors(npoints3, f3, G3, 0, sG3);
     g3->GetXaxis()->SetTitle("f (Hz)");
     c3->SetLogx(1);
-    g3->GetYaxis()->SetTitle("G = |V_o| / |V_i|");
+    g3->GetYaxis()->SetTitle("G = #frac{|V_{o}|}{|V_{i}|}");
     g3->SetMarkerSize(0.6);
     g3->SetMarkerStyle(21);
     g3->SetTitle("G(f)");
     g3->Draw("AP");
 
     // Fit
-    TF1 *funz3 = new TF1("funz1", "154.37/sqrt(pow((154.37+pow([0],2)),2) + pow(2*TMath::Pi()*[1]*(pow(x,2)-pow([2],2))/x,2))", 1e2, 1e6);
+    TF1 *funz3 = new TF1("funz1", "154.37/sqrt(pow((154.37+[0]),2) + pow(2*TMath::Pi()*[1]*x-1/(2*TMath::Pi()*[2]*x),2))", 1e1, 1e6);
     funz3->SetParameter(1, 7.265e-3);
-    funz3->SetParameter(2, 1874);
-    funz3->SetParLimits(2, 0., 1e7);
+    funz3->SetParameter(2, 1e-6);
+    funz3->SetParLimits(2, 0., 1);
     TFitResultPtr fitResults = g3->Fit(funz3, "RMS");
     Float_t s01 = fitResults->GetCovarianceMatrix()[0][1]; // Covarianza R_s - L
-    Float_t s02 = fitResults->GetCovarianceMatrix()[0][2]; // Covarianza R_s - f_r
-    Float_t s12 = fitResults->GetCovarianceMatrix()[1][2]; // Covarianza L - f_r
+    Float_t s02 = fitResults->GetCovarianceMatrix()[0][2]; // Covarianza R_s - C
+    Float_t s12 = fitResults->GetCovarianceMatrix()[1][2]; // Covarianza L - C
 
     Double_t R_s = funz3->GetParameter(0);
     Double_t sR_s = funz3->GetParError(0);
     Double_t L = funz3->GetParameter(1);
     Double_t sL = funz3->GetParError(1);
-    Double_t f_r = funz3->GetParameter(2);
-    Double_t sf_r = funz3->GetParError(2);
-    Double_t C = 1 / pow(2*TMath::Pi()*f_r, 2)/L;
-    Double_t sC = sqrt(pow(sL/L,2) + pow(2*sf_r/f_r,2) + 4*s12/f_r/L) / pow(2*TMath::Pi()*f_r,2)/L;
+    Double_t C = funz3->GetParameter(2);
+    Double_t sC = funz3->GetParError(2);
+    Double_t f_r = 1 / (2*TMath::Pi()*sqrt(L*C));
+    Double_t sf_r = 1/(2*TMath::Pi()*L*C) * sqrt(C/4/L*sL*sL + L/4/L*sC*sC + s12/2);
 
     cout << "R_s = (" << R_s << " +- " << sR_s << ") Ohm" << endl;
     cout << "f_r = (" << f_r << " +- " << sf_r << ") Hz" << endl;
@@ -139,9 +139,9 @@ void filtri()
     cout << "C = (" << C << " +- " << sC << ") F" << endl;
 
     Float_t C_m = 9.93E-07; // F
-    Float_t sC_m = 1e-10; // F
+    Float_t sC_m = 0.007*C_m + 0.1e-7; // F
     Float_t L_m = 7.265e-3; // H
-    Float_t sL_m = 1e-6; // H
+    Float_t sL_m = 0.008*L_m + 0.01e-3; // H
     Float_t f_r_m = 1 / (2*TMath::Pi()*sqrt(L_m*C_m)); // Hz
     Float_t sf_r_m = sqrt(sL_m*sL_m/(4*C_m*pow(L_m,3)) + sC_m*sC_m/(4*pow(C_m,3)*L_m)) / 2/TMath::Pi(); // Hz
 
