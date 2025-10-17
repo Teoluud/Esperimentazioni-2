@@ -1,3 +1,5 @@
+//#pragma once
+
 #include <iostream>       // ci serve per stampare a video il testo (uso di cout e endl, per esempio)
 #include <TGraphErrors.h> // ci serve per istanziare grafici
 #include <TAxis.h>        // ci serve per manipolare gli assi dei grafici
@@ -9,88 +11,109 @@
 #include <fstream>
 #include <TLatex.h>
 #include <TStyle.h>
+#include <TLine.h>
 
 #define MAX_DATI_DIM 128
 
-using namespace std;
+// using namespace std;
 
-class AnalisiDati {
-    TGraphErrors* grafico;
-    TF1* funzioneFit;
+class AnalisiDati
+{
+    TGraphErrors *grafico;
+    TF1 *funzioneFit;
     float markerSize = 0.6;
     int markerStyle = 21;
     int nPoints;
-    char* nomeFile;
-    char* nomeAsseX, *nomeAsseY;
-    char* nomeGrafico;
-    char* funzione;
-    float* datiX;
-    float* datiY;
-    float* errDatiX;
-    float* errDatiY;
+    // char* nomeFile;
+    char *nomeCanvas;
+    char *nomeAsseX, *nomeAsseY;
+    char *nomeGrafico;
+    char *funzione;
+    float *datiX;
+    float *datiY;
+    float *errDatiX;
+    float *errDatiY;
+    float minX, maxX;
 
-    public:
-    AnalisiDati(int _nPoints, const char* _nomeFile, const char* _nomeAsseX, const char* _nomeAsseY,
-                const char* _funzione, const char* _nomeGrafico, float minX, float maxX) {
+public:
+    AnalisiDati(int _nPoints, const char *_nomeCanvas,
+                const char *_funzione, float _minX, float _maxX)
+    {
         nPoints = _nPoints;
-        nomeFile = new char[32];
+        minX = _minX;
+        maxX = _maxX;
+        // nomeFile = new char[32];
+        nomeCanvas = new char[32];
         nomeAsseX = new char[32];
         nomeAsseY = new char[32];
         funzione = new char[32];
         nomeGrafico = new char[32];
 
-        CopiaStringhe(nomeFile, _nomeFile);
-        CopiaStringhe(nomeAsseX, _nomeAsseX);
-        CopiaStringhe(nomeAsseY, _nomeAsseY);
+        // CopiaStringhe(nomeFile, _nomeFile);
+        CopiaStringhe(nomeCanvas, _nomeCanvas);
         CopiaStringhe(funzione, _funzione);
-        CopiaStringhe(nomeGrafico, _nomeGrafico);
-
+        
         datiX = new float[nPoints];
         datiY = new float[nPoints];
         errDatiX = new float[nPoints];
         errDatiY = new float[nPoints];
-
+        
         funzioneFit = new TF1("funzioneFit", funzione, minX, maxX);
-
-        LeggiFile();
+        // LeggiFile();
     }
 
-    private:
-    void LeggiFile() {
-        fstream file;
-        file.open(nomeFile, ios::in);
+    void LeggiFile(const char *nomeFile, float nsX = 0, float nsY = 0)
+    {
+        std::fstream file;
+        file.open(nomeFile, std::ios::in);
 
-        float nX, nY, nsX, nsY;
-        for(int j = 0; j < nPoints; j++) {
-            file >> nX >> nsX >> nY >> nsY;
-            datiX[j] = nX;
-            errDatiX[j] = nsX;
-            datiY[j] = nY;
-            errDatiY[j] = nsY;
-        }
+        float nX, nY, errX = nsX, errY = nsY;
+            for (int j = 0; j < nPoints; j++)
+            {
+                if (nsX == 0 && nsY == 0)
+                    file >> nX >> errX >> nY >> errY;
+                else if (nsX == 0 && nsY != 0)
+                    file >> nX >> errX >> nY;
+                else if (nsX != 0 && nsY == 0)
+                    file >> nX >> nY >> errY;
+                else
+                    file >> nX >> nY;
+                datiX[j] = nX;
+                errDatiX[j] = errX;
+                datiY[j] = nY;
+                errDatiY[j] = errY;
+                //std::cout << nX << " " << errX << " " << nY << " " << errY << std::endl;
+            }
 
         file.close();
     }
 
-    void CopiaStringhe(char* str1, const char* str2) {
-        int i=0;
-        for (i=0; str2[i] != 0; i++) {
+private:
+    void CopiaStringhe(char *str1, const char *str2)
+    {
+        int i = 0;
+        for (i = 0; str2[i] != 0; i++)
+        {
             str1[i] = str2[i];
         }
         str1[i] = 0;
     }
 
-    public:
-    void SetParLimits(int parameter, float min, float max) {
+public:
+    void SetParLimits(int parameter, float min, float max)
+    {
         funzioneFit->SetParLimits(parameter, min, max);
     }
 
-    void SetParameter(int parameter, float value) {
+    void SetParameter(int parameter, float value)
+    {
         funzioneFit->SetParameter(parameter, value);
     }
 
-    void DisegnaGrafico() {
-        TCanvas *c1 = new TCanvas("c1", "Silicio", 600, 400);
+    void DisegnaGrafico(const char *nomeGrafico, const char *nomeAsseX, const char *nomeAsseY, bool xAxis = false)
+    {
+        TCanvas *canvas = new TCanvas(nomeCanvas, nomeCanvas, 600, 400);
+        canvas->cd();
         grafico = new TGraphErrors(nPoints, datiX, datiY, errDatiX, errDatiY);
         grafico->SetMarkerSize(markerSize);
         grafico->SetMarkerStyle(markerStyle);
@@ -98,23 +121,52 @@ class AnalisiDati {
         grafico->GetYaxis()->SetTitle(nomeAsseY);
         grafico->SetTitle(nomeGrafico);
         grafico->Draw("AP");
+        if (xAxis == true)
+        {
+            TLine *line = new TLine(0, 0, grafico->GetXaxis()->GetXmax(), 0);
+            line->Draw();
+        }
     }
 
-    void CalcoloFit() {
+    void CalcoloFit()
+    {
         funzioneFit->SetLineColor(4);
         grafico->Fit(funzioneFit, "RM+");
         gStyle->SetOptFit(1);
     }
 
-    float GetParameter(int parameter) {
+    float GetParameter(int parameter)
+    {
         return funzioneFit->GetParameter(parameter);
     }
 
-    float GetParError(int parameter) {
+    float GetParError(int parameter)
+    {
         return funzioneFit->GetParError(parameter);
     }
 
-    void GetParameters(double* parameterArray) {
+    void GetParameters(double *parameterArray)
+    {
         return funzioneFit->GetParameters(parameterArray);
+    }
+
+    void GetParErrors(double *parErrorsArray)
+    {
+        /* work in progress */
+        return;
+    }
+
+    float *GetData(const char *data)
+    {
+        if (strcmp(data, "x") == 0)
+            return datiX;
+        else if (strcmp(data, "err x") == 0)
+            return errDatiX;
+        else if (strcmp(data, "y") == 0)
+            return datiY;
+        else if (strcmp(data, "err y") == 0)
+            return errDatiY;
+        else
+            return nullptr;
     }
 };

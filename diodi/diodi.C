@@ -15,58 +15,40 @@
 
 using namespace std;
 
-/* void diodi()
+void diodi()
 {
-    Int_t npoints = 20;
-    Float_t I[npoints];
-    Float_t nI = 0;
-    Float_t V[npoints];
-    Float_t nV = 0;
-    Float_t sI[npoints];
-    Float_t nsI = 0;
-    Float_t sV[npoints];
-    Float_t nsV = 0;
-
-    fstream file;
-    file.open("dati_diodi.txt", ios::in);
-
-    for(int j = 0; j < npoints; j++)
-    {
-        file >> nV >> nsV >> nI >> nsI;
-        I[j] = nI*1e3;
-        sI[j] = nsI*1e3;
-        V[j] = nV*1e3;
-        sV[j] = nsV*1e3;
-    }
-    file.close();
-
-    TCanvas *c1 = new TCanvas("c1", "Silicio", 600, 400);
-    TGraphErrors *g1 = new TGraphErrors(npoints, V, I, sV, sI);
-    g1->SetMarkerSize(0.6);
-    g1->SetMarkerStyle(21);
-    g1->GetXaxis()->SetTitle("V_{d} (mV)");
-    g1->GetYaxis()->SetTitle("I_{d} (mA)");
-    g1->SetTitle("Caratteristica I-V silicio");
-    g1->Draw("AP");
-
-    cout << "\n\n --- Equazione di Shockley: --- \n" << endl;
-    TF1 *f1 = new TF1("f1", "[0]*(TMath::Exp(x/[1]/26)-1)", 400, 700);
-    f1->SetLineColor(4);
-    f1->SetParLimits(0, 0, 1e8);
-    f1->SetParameter(0, 1e-6);
-    f1->SetParameter(1, 2);
-    g1->Fit(f1, "RM+");
-    gStyle->SetOptFit(1);
-} */
-
-void diodi() {
-    AnalisiDati* silicio = new AnalisiDati(20, "dati_diodi.txt", "V_{d} (V)", "I_{d} (mA)",
-                                            "[0]*(TMath::Exp(x/[1]/0.026)-1)", "Caratteristica I-V silicio",
-                                            0.450, 0.63);
-    
+    AnalisiDati *silicio = new AnalisiDati(20, "dati_silicio.txt", "silicio", "V_{d} (V)", "I_{d} (mA)",
+                                           "[0]*(TMath::Exp(x/[1]/0.026)-1)", "Caratteristica I-V silicio",
+                                           0.450, 0.63);
+    /*AnalisiDati silicio(20, "dati_silicio.txt", "silicio", "V_{d} (V)", "I_{d} (mA)",
+                                           "[0]*(TMath::Exp(x/[1]/0.026)-1)", "Caratteristica I-V silicio",
+                                           0.450, 0.63);*/
     silicio->DisegnaGrafico();
-    silicio->SetParameter(0, 1e-5);
-    silicio->SetParLimits(0, 0., 1e6);
+    silicio->SetParameter(0, 1e-8); // da trovare parametro ottimale per far convergere il fit
+    silicio->SetParLimits(0, 0, 1);
     silicio->SetParameter(1, 2);
+    silicio->SetParLimits(1, 1.5, 2.5);
     silicio->CalcoloFit();
+
+    AnalisiDati *ledIV = new AnalisiDati(20, "dati_ledIV.txt", "LED", "V_{d} (V)", "I_{d} (mA)",
+                                         "[0]*(TMath::Exp(x/[1]/0.026)-1)", "Caratteristica I-V LED", 0.8, 2);
+    ledIV->DisegnaGrafico();
+    ledIV->SetParameter(0, 1e-15);
+    ledIV->SetParLimits(0, -1, 1);
+    ledIV->SetParameter(1, 2);
+    ledIV->SetParLimits(1, 1, 2.5);
+    ledIV->CalcoloFit();
+
+
+    AnalisiDati *ledVI = new AnalisiDati(20, "dati_ledVI.txt", "LED2", "I_{d} (#muA)", "V_{d} (V)",
+                                         "[1]*0.026*TMath::Log(x/[0]+1)+[2]*x", "Caratteristica V-I LED", 0, 5000);
+    ledVI->DisegnaGrafico();
+    // INUTILE, TANTO IL LOG NATURALE DEVE PASSARE DALL'ORIGINE, QUINDI NON FITTERA' MAI. L'unico modo è di aggiungere un parametro di traslazione verso l'alto (sistematico?)
+    ledVI->SetParameter(0, 1e-12);
+    ledVI->SetParLimits(0, -1, 1);
+    ledVI->SetParameter(1, 2);
+    ledVI->SetParLimits(1, 1, 2.5);
+    ledVI->SetParameter(2, 0);
+    // ledVI->SetParLimits(2, -1, 1);
+    ledVI->CalcoloFit();
 }

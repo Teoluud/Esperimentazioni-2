@@ -9,12 +9,13 @@
 #include <fstream>
 #include <TLatex.h>
 #include <TStyle.h>
+#include "../Fit.C"
 
 using namespace std;
 
 void malus()
 {
-    Int_t npoints = 37;
+    /* Int_t npoints = 37;
     Float_t theta[npoints];
     Float_t ntheta = 0;
     Float_t I[npoints];
@@ -62,6 +63,11 @@ void malus()
     fit->SetParameter("a", 10.);
     fit->SetParameter("b", 1.5);
     //fit->SetParameter("c", 0.);
-    g1->Fit(fit, "RM+");
+    g1->Fit(fit, "RM+");*/
+
+    AnalisiDati *malus = new AnalisiDati(37, "malus", "[a]*pow(TMath::Cos(x+[b]),2) + [c]", -0.5, 7.);
+    malus->LeggiFile("dati_malus.txt", 0.03, 0);
+    malus->DisegnaGrafico("Legge di Malus", "#theta (rad)", "I (#muA)");
+    malus->CalcoloFit();
 
 }

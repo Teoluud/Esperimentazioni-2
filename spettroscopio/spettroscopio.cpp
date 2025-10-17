@@ -57,7 +57,8 @@ void spettroscopio()
   f1->SetParameter(0, 1);
   f1->SetParameter(1, 1e4);
   g1->Fit(f1, "RM+");
-  gStyle->SetOptFit(1);
-
+  // gStyle->SetOptFit(1);
+  double chiSquare = g1->Chisquare(f1);
+  cout << "Chi-quadro = " << chiSquare << endl;
 
 }

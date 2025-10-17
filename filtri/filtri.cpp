@@ -11,70 +11,13 @@
 #include <TStyle.h>
 #include <TFitResult.h>
 #include <TFitResultPtr.h>
+#include "../Fit.C"
 
 using namespace std;
 
 void filtri()
 {
-    // ------------------------------------------- filtro RC Passa Alto ------------------------------------ //
-    Int_t npoints = 26;
-    Float_t nf = 0, nG = 0, nsG = 0;
-    Float_t f[npoints];
-    Float_t G[npoints];
-    Float_t sG[npoints];
-    fstream file;
-    file.open("dati_filtri_RC_1.txt", ios::in);
-
-    for (int j = 0; j < npoints; j++)
-    {
-        file >> nf >> nG >> nsG;
-        f[j] = nf;
-        G[j] = nG;
-        sG[j] = nsG;
-    }
-    file.close();
-
-    Float_t fl_t = 15568; // Hz
-    Float_t sfl_t = 7; // Hz
-
-    cout << "\n---------------------------------- Filtro RC passa alto----------------------------------\n"
-         << endl;
-    for (int j = 0; j < npoints; j++)
-    {
-        // Stampa a video dei valori. \t inserisce un tab nel print out. Mettendo \n si va a capo invece
-        cout << "Measurement number " << j << ":\t f = (" << f[j] << ") Hz, \t G = (" << G[j] << " +- " << sG[j] << ")" << endl;
-        // ----------------------------------------------------------------- //
-    }
-
-    // Canvas
-    TCanvas *c1 = new TCanvas("c1", "RC passa alto", 200, 10, 600, 400);
-    TGraphErrors *g1 = new TGraphErrors(npoints, f, G, 0, sG);
-    g1->SetMarkerSize(0.6);
-    g1->SetMarkerStyle(21);
-    g1->GetXaxis()->SetTitle("f (Hz)");
-    c1->SetLogx(1);
-    g1->GetYaxis()->SetTitle("G = #frac{|V_{o}|}{|V_{i}|}");
-    g1->SetTitle("G(f)");
-    g1->Draw("AP");
-
-    // Fit della funzione
-    cout << "\n\n --- Ipotesi:G = f/([0]+f^2) --- \n"
-         << endl;
-    TF1 *funz1 = new TF1("funz1", "x/sqrt([0]+x^2)", 1e2, 1e6);
-    funz1->SetLineColor(4);
-    g1->Fit(funz1, "RM+");
-    gStyle->SetOptFit(1);
-
-    Float_t a = funz1->GetParameter(0);
-    Float_t sa = funz1->GetParError(0);
-    Float_t fl = sqrt(a);
-    Float_t sfl = sa/2/sqrt(a);
-    cout << "\nLa frequenza di taglio è pari a: f_L = (" << fl << " +- " << sfl << ") Hz" << endl;
-
-    // Test di Gauss
-    Float_t z = abs(fl-fl_t)/sqrt(sfl*sfl+sfl_t*sfl_t);
-    cout << "z = " << z << endl;
-
+    //AnalisiDati* rcl = new AnalisiDati(32, "dati_filtri_RCL.txt", "rcl", "#nu [Hz]", "G = #frac{|V_{o}|}{|V_{i}|}", "154.37/sqrt(pow((154.37+[0]),2) + pow(2*TMath::Pi()*[1]*x-1/(2*TMath::Pi()*[2]*x),2))", "G(#nu)", 1e1, 1e6);
     // ------------------------------------------- filtro RCL Passa Banda ------------------------------------ //
     Int_t npoints3 = 32;
     Float_t f3[npoints3], G3[npoints3];
@@ -82,7 +25,7 @@ void filtri()
     Float_t nf3=0, nG3=0, nsG3=0;
 
     Float_t R = 154.37; // Ohm
-
+    fstream file;
     file.open("dati_filtri_RCL.txt", ios::in);
 
     for(int j=0; j<npoints3; j++)
@@ -106,13 +49,14 @@ void filtri()
     // Grafico
     TCanvas *c3 = new TCanvas("c3", "RCL passa banda", 600, 400);
     TGraphErrors *g3 = new TGraphErrors(npoints3, f3, G3, 0, sG3);
-    g3->GetXaxis()->SetTitle("f (Hz)");
+    g3->GetXaxis()->SetTitle("#nu (Hz)");
     c3->SetLogx(1);
     g3->GetYaxis()->SetTitle("G = #frac{|V_{o}|}{|V_{i}|}");
     g3->SetMarkerSize(0.6);
     g3->SetMarkerStyle(21);
-    g3->SetTitle("G(f)");
+    g3->SetTitle("G(#nu)");
     g3->Draw("AP");
+    //gStyle->SetOptFit(1);
 
     // Fit
     TF1 *funz3 = new TF1("funz1", "154.37/sqrt(pow((154.37+[0]),2) + pow(2*TMath::Pi()*[1]*x-1/(2*TMath::Pi()*[2]*x),2))", 1e1, 1e6);
