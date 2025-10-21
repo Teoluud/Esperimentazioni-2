@@ -62,7 +62,7 @@ public:
         // LeggiFile();
     }
 
-    void LeggiFile(const char *nomeFile, float nsX = 0, float nsY = 0)
+    void LeggiFile(const char *nomeFile, float nsX = -99, float nsY = -99)
     {
         std::fstream file;
         file.open(nomeFile, std::ios::in);
@@ -70,11 +70,11 @@ public:
         float nX, nY, errX = nsX, errY = nsY;
             for (int j = 0; j < nPoints; j++)
             {
-                if (nsX == 0 && nsY == 0)
+                if (nsX == -99 && nsY == -99)
                     file >> nX >> errX >> nY >> errY;
-                else if (nsX == 0 && nsY != 0)
+                else if (nsX == -99 && nsY != -99)
                     file >> nX >> errX >> nY;
-                else if (nsX != 0 && nsY == 0)
+                else if (nsX != -99 && nsY == -99)
                     file >> nX >> nY >> errY;
                 else
                     file >> nX >> nY;
