@@ -66,8 +66,11 @@ void malus()
     g1->Fit(fit, "RM+");*/
 
     AnalisiDati *malus = new AnalisiDati(37, "malus", "[a]*pow(TMath::Cos(x+[b]),2) + [c]", -0.5, 7.);
-    malus->LeggiFile("dati_malus.txt", 0.03, 0);
+    malus->LeggiFile("/home/matteo/uni/esp-2/malus/dati_malus.txt", 0.03);
     malus->DisegnaGrafico("Legge di Malus", "#theta (rad)", "I (#muA)");
+    
+    malus->SetParameter(0, 10.);
+    malus->SetParameter(1, 1.5);
     malus->CalcoloFit();
 
 }
