@@ -13,7 +13,7 @@
 #include <TStyle.h>
 #include <TLine.h>
 
-#define MAX_DATI_DIM 128
+// #define MAX_DATI_DIM 128
 
 // using namespace std;
 
@@ -24,10 +24,7 @@ class AnalisiDati
     float markerSize = 0.6;
     int markerStyle = 21;
     int nPoints;
-    // char* nomeFile;
     char *nomeCanvas;
-    char *nomeAsseX, *nomeAsseY;
-    char *nomeGrafico;
     char *funzione;
     float *datiX;
     float *datiY;
@@ -44,10 +41,7 @@ public:
         maxX = _maxX;
         // nomeFile = new char[32];
         nomeCanvas = new char[32];
-        nomeAsseX = new char[32];
-        nomeAsseY = new char[32];
         funzione = new char[32];
-        nomeGrafico = new char[32];
 
         // CopiaStringhe(nomeFile, _nomeFile);
         CopiaStringhe(nomeCanvas, _nomeCanvas);
@@ -100,17 +94,25 @@ private:
     }
 
 public:
-    void SetParLimits(int parameter, float min, float max)
+    void SetParLimits(Int_t parameter, Double_t min, Double_t max)
     {
         funzioneFit->SetParLimits(parameter, min, max);
+        return;
     }
 
-    void SetParameter(int parameter, float value)
+    void SetParameter(Int_t parameter, Double_t value)
     {
         funzioneFit->SetParameter(parameter, value);
+        return;
     }
 
-    void DisegnaGrafico(const char *nomeGrafico, const char *nomeAsseX, const char *nomeAsseY, bool xAxis = false)
+    void SetParameterName(Int_t parameterId, const char *parameterName)
+    {
+        funzioneFit->SetParName(parameterId, parameterName);
+        return;
+    }
+
+    void DisegnaGrafico(const char *nomeGrafico, const char *nomeAsseX, const char *nomeAsseY, bool xAxis = false, bool logScale = false)
     {
         TCanvas *canvas = new TCanvas(nomeCanvas, nomeCanvas, 600, 400);
         canvas->cd();
@@ -121,11 +123,13 @@ public:
         grafico->GetYaxis()->SetTitle(nomeAsseY);
         grafico->SetTitle(nomeGrafico);
         grafico->Draw("AP");
-        if (xAxis == true)
+        if (xAxis)
         {
             TLine *line = new TLine(0, 0, grafico->GetXaxis()->GetXmax(), 0);
             line->Draw();
         }
+        if (logScale)
+            canvas->SetLogx(1);
     }
 
     void CalcoloFit()
@@ -133,28 +137,36 @@ public:
         funzioneFit->SetLineColor(4);
         grafico->Fit(funzioneFit, "RM+");
         gStyle->SetOptFit(1);
+        return;
     }
 
-    float GetParameter(int parameter)
+    Double_t GetParameter(Int_t parameter)
     {
         return funzioneFit->GetParameter(parameter);
     }
 
-    float GetParError(int parameter)
+    Double_t GetParameter(const TString &parameter)
+    {
+        return funzioneFit->GetParameter(parameter);
+    }
+
+    Double_t GetParError(Int_t parameter)
     {
         return funzioneFit->GetParError(parameter);
     }
 
-    void GetParameters(double *parameterArray)
+    void GetParameters(Double_t *parameterArray)
     {
         return funzioneFit->GetParameters(parameterArray);
     }
 
     void GetParErrors(double *parErrorsArray)
     {
-        /* work in progress */
+        // work in progress
         return;
     }
+
+    
 
     float *GetData(const char *data)
     {
