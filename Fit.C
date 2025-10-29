@@ -1,5 +1,3 @@
-//#pragma once
-
 #include <iostream>       // ci serve per stampare a video il testo (uso di cout e endl, per esempio)
 #include <TGraphErrors.h> // ci serve per istanziare grafici
 #include <TAxis.h>        // ci serve per manipolare gli assi dei grafici
@@ -41,7 +39,7 @@ public:
         maxX = _maxX;
         // nomeFile = new char[32];
         nomeCanvas = new char[32];
-        funzione = new char[32];
+        funzione = new char[128];
 
         // CopiaStringhe(nomeFile, _nomeFile);
         CopiaStringhe(nomeCanvas, _nomeCanvas);
@@ -80,6 +78,7 @@ public:
             }
 
         file.close();
+        return;
     }
 
 private:
@@ -90,11 +89,11 @@ private:
         {
             str1[i] = str2[i];
         }
-        str1[i] = 0;
+        str1[i] = 0; // termine stringa
     }
 
 public:
-    void SetParLimits(Int_t parameter, Double_t min, Double_t max)
+    void SetParLimits(int parameter, float min, float max)
     {
         funzioneFit->SetParLimits(parameter, min, max);
         return;
@@ -130,6 +129,8 @@ public:
         }
         if (logScale)
             canvas->SetLogx(1);
+        
+        return;
     }
 
     void CalcoloFit()
@@ -140,22 +141,22 @@ public:
         return;
     }
 
-    Double_t GetParameter(Int_t parameter)
+    float GetParameter(int parameter)
     {
         return funzioneFit->GetParameter(parameter);
     }
 
-    Double_t GetParameter(const TString &parameter)
+    float GetParameter(const char *parameter)
     {
         return funzioneFit->GetParameter(parameter);
     }
 
-    Double_t GetParError(Int_t parameter)
+    float GetParError(int parameter)
     {
         return funzioneFit->GetParError(parameter);
     }
 
-    void GetParameters(Double_t *parameterArray)
+    void GetParameters(double *parameterArray)
     {
         return funzioneFit->GetParameters(parameterArray);
     }
