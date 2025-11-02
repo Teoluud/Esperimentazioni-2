@@ -82,9 +82,9 @@ void planck()
     // cout << "\nIl potenziale di arresto corrispondente a 459nm è: " << zero459 << endl;
 
     //------------------------------------- Misura Costante di Planck -----------------------------------//
-    AnalisiDati* costante = new AnalisiDati(3, "costante", "#nu [x10^{12} Hz]", 450, 700);
+    AnalisiDati* costante = new AnalisiDati(3, "costante", "[0]+[1]*x", 450, 700);
     costante->LeggiFile("dati_zeri.txt");
-    costante->DisegnaGrafico("V(#nu)", "V [mV]", "[0]+[1]*x");
+    costante->DisegnaGrafico("V(#nu)", "V [mV]", "#nu [x10^{12} Hz]");
     costante->SetParameter(1, 6.626e-34/9.1e-34);
     costante->CalcoloFit();
     double pendenza = costante->GetParameter(1);
